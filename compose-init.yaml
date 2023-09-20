@@ -6,13 +6,9 @@ services:
     command: python -m django startproject ${PROJECT_NAME} .
     volumes:
       - ./${PROJECT_DIR}:/home/${UNAME}/${PROJECT_DIR}
-      - test:/bin
     networks:
       default:
 
-volumes:
-  test:
-
 networks:
   default:
-    name: "hejsa"
+    name: meta_subscribe_init

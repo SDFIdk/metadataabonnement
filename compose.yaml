@@ -14,4 +14,4 @@ services:
 
 networks:
   default:
-    name: hejsa
+    name: meta_subscribe
