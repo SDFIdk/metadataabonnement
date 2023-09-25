@@ -14,4 +14,4 @@ USER ${UNAME}
 
 WORKDIR /home/${UNAME}
 
-RUN pip install Django==4.2.5
+RUN pip install Django==4.2.5 psycopg2-binary

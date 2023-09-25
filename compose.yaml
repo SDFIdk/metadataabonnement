@@ -12,6 +12,23 @@ services:
     networks:
       - default
 
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: metaInfo
+      POSTGRES_USER: datUser
+      POSTGRES_PASSWORD: renteMester2400
+    networks:
+      - default
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8090:8080
+    networks:
+      - default
 networks:
   default:
     name: meta_subscribe
