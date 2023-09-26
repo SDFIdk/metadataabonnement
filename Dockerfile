@@ -14,4 +14,6 @@ USER ${UNAME}
 
 WORKDIR /home/${UNAME}
 
-RUN pip install Django==4.2.5 psycopg2-binary
+COPY requirements.txt /home/${UNAME}
+
+RUN pip install --no-cache-dir -r /home/${UNAME}/requirements.txt
