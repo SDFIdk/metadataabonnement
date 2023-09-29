@@ -8,11 +8,11 @@ services:
     command: python manage.py runserver 0.0.0.0:${PORT}
     environment:
       - TZ=Europe/Copenhagen
-      - DATABASE_NAME=metaInfo
-      - DATABASE_USER=datUser
-      - DATABASE_PASSWORD=renteMester2400
-      - DATABASE_HOST=db
-      - DATABASE_PORT=5432
+      - DATABASE_NAME=${DATABASE_NAME}
+      - DATABASE_USER=${DATABASE_USER}
+      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
+      - DATABASE_HOST=${DATABASE_HOST}
+      - DATABASE_PORT=${DATABASE_PORT}
     volumes:
       - ./${PROJECT_DIR}:/home/${UNAME}/${PROJECT_DIR}
     networks:

@@ -7,6 +7,6 @@ def datasets_view(request):
     return render(request, 'datasets.html', {'datasets': datasets})
 
 def new_page(request):
-    return HttpResponse("Hello human, I am the messenger and this is the new page!")
+    return HttpResponse("Hello human, I am the messenger and this is the new page! Mark my words!")
 
 # Create your views here.

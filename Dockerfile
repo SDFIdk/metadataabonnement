@@ -1,13 +1,13 @@
 FROM python:3.11.5-slim
 
 RUN apt update \
-	&& apt upgrade -y
+	 && apt upgrade -y
 
 ARG UNAME=niksk
 ARG UID=2022
 ARG GID=4004
 
-RUN groupadd -g ${GID} -o ${UNAME}
+RUN groupadd -g ${GID} ${UNAME}
 RUN useradd -m -u ${UID} -g ${GID} -o -s /bin/bash ${UNAME}
 
 USER ${UNAME}
