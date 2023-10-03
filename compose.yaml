@@ -2,17 +2,18 @@ services:
 
   django:
     build: .
+    restart: always
     ports:
       - "${PORT}:${PORT}"
     working_dir: /home/${UNAME}/${PROJECT_DIR}
     command: python manage.py runserver 0.0.0.0:${PORT}
     environment:
-      - TZ=Europe/Copenhagen
-      - DATABASE_NAME=${DATABASE_NAME}
-      - DATABASE_USER=${DATABASE_USER}
-      - DATABASE_PASSWORD=${DATABASE_PASSWORD}
-      - DATABASE_HOST=${DATABASE_HOST}
-      - DATABASE_PORT=${DATABASE_PORT}
+      TZ: Europe/Copenhagen
+      DATABASE_NAME: ${DATABASE_NAME}
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_HOST: ${DATABASE_HOST}
+      DATABASE_PORT: ${DATABASE_PORT}
     volumes:
       - ./${PROJECT_DIR}:/home/${UNAME}/${PROJECT_DIR}
     networks:
@@ -22,9 +23,9 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_DB: metaInfo
-      POSTGRES_USER: datUser
-      POSTGRES_PASSWORD: renteMester2400
+      POSTGRES_DB: ${DATABASE_NAME}
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     networks:
       - default
 

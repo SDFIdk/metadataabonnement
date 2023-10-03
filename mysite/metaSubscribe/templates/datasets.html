@@ -1,14 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Datasets</title>
-</head>
-<body>
-    <h1>Datasets</h1>
-    <ul>
-        {% for dataset in datasets %}
-        <li>{{ dataset.ID_LOKALID }} - {{ dataset.TITEL }}</li>
-        {% endfor %}
-    </ul>
-</body>
-</html>
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Datasets</h1>
+<ul>
+{% for dataset in datasets %}
+    <li>{{ dataset.OBJECTID }} - {{ dataset.ID_LOKALID }} - {{ dataset.TITEL }}</li>
+{% endfor %}
+</ul>
+{% endblock %}
