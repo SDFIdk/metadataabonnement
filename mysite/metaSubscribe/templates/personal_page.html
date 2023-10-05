@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Hello, {{ user.EMAIL }}</h2>
+<h3>Your Datasets</h3>
+<ul>
+    {% for dataset in user.datasets.all %}
+    <li>{{ dataset.TITEL }}</li>
+    {% endfor %}
+</ul>
+<h3>All Datasets</h3>
+<ul>
+    {% for dataset in datasets %}
+    <li>{{ dataset.TITEL }}</li>
+    {% endfor %}
+</ul>
+{% endblock %}
