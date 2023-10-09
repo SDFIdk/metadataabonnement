@@ -35,7 +35,12 @@ def personal_page_view(request):
         return redirect('login_view') # Redirect to login if not logged in
 
     user = CustomUser.objects.get(USERID=user_id)
-    return render(request, 'personal_page.html', {'user': user})
+    datasets = Dataset.objects.all()
+    context = {
+        'user': user,
+        'datasets': datasets
+    }
+    return render(request, 'personal_page.html', context)
 
 
 def dataset_users_view(request):
@@ -59,4 +64,4 @@ def home_page(request):
     return render(request, 'homepage.html')
     # return HttpResponse("Hello human, I am the messenger and this is the homepage!")
 
-# Create your views here.
+
