@@ -3,6 +3,7 @@ from .forms import UserLoginForm
 from django.http import HttpResponse
 from .models import Dataset
 from .models import CustomUser
+from .forms import RegisterDatasetForm
 
 def logout_view(request):
     if 'user_id' in request.session:
@@ -36,11 +37,35 @@ def personal_page_view(request):
 
     user = CustomUser.objects.get(USERID=user_id)
     datasets = Dataset.objects.all()
+
+    if request.method == "POST":
+        form = RegisterDatasetForm(request.POST)
+        if form.is_valid():
+            selected_datasets = form.cleaned_data.get('dataset')
+            
+            # Ensure selected_datasets is iterable
+            if isinstance(selected_datasets, Dataset):
+                selected_datasets = [selected_datasets]
+            
+            # Add the selected datasets to the user's datasets
+            user.datasets.add(*selected_datasets)
+            
+            return redirect('personal_page_view')
+
+    else:
+        form = RegisterDatasetForm()
+
+    user_datasets = user.datasets.all()
+
     context = {
         'user': user,
-        'datasets': datasets
+        'datasets': datasets,
+        'form': form,
+        'user_datasets': user_datasets,
     }
     return render(request, 'personal_page.html', context)
+
+
 
 
 def dataset_users_view(request):
