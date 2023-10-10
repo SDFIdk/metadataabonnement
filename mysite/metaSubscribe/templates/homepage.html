@@ -1,5 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Metadata Abonnement System Homepage</h1>
+<h2>Metadata Abonnement System</h2>
+<h3>Log ind eller Registrer Bruger</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login/Registrer</button>
+</form>
 {% endblock %}

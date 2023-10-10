@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>Admin Dashboard</h2>
+
+<ul>
+    <li><a href="{% url 'users_view' %}">Brugere</a></li>
+    <li><a href="{% url 'user_datasets_view' %}">Brugere : Datasæt</a></li>
+    <li><a href="{% url 'dataset_users_view' %}">Datasæt : Brugere</a></li>
+</ul>
+
+{% endblock %}

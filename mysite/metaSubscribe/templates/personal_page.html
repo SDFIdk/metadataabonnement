@@ -1,26 +1,32 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Hello, {{ user.EMAIL }}</h2>
+<h2>Bruger: {{ user.EMAIL }}</h2>
 
-<h3>Register for a Dataset</h3>
+<form method="post" action="{% url 'logout_view' %}">
+    {% csrf_token %}
+    <button type="submit">Log ud</button>
+</form>
+
+<h3>Registrer brug af Datasæt</h3>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Register</button>
+    <button type="submit">Registrer</button>
 </form>
 
-<h3>Your Datasets</h3>
+<h3>Registrerede Datasæt for bruger: {{ user.EMAIL }}</h3>
 <ul>
     {% for dataset in user_datasets %}
-    <li>{{ dataset.TITEL }} - {{ dataset.userdataset.description }}</li>
-    {% endfor %}
-</ul>
-
-<h3>All Datasets</h3>
-<ul>
-    {% for dataset in datasets %}
-    <li>{{ dataset.TITEL }}</li>
+    <li>
+        {{ dataset.TITEL }} - {{ dataset.userdataset.description }}
+        <!-- Remove Dataset Form -->
+        <form method="post" style="display: inline;">
+            {% csrf_token %}
+            <input type="hidden" name="remove_dataset_id" value="{{ dataset.id }}">
+            <button type="submit" style="background: none;border: none;color: red;cursor: pointer;">Remove</button>
+        </form>
+    </li>
     {% endfor %}
 </ul>
 {% endblock %}

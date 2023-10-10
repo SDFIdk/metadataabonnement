@@ -14,7 +14,16 @@ class UserLoginForm(forms.Form):
         return email
 
 class RegisterDatasetForm(forms.ModelForm):
-    description = forms.CharField(widget=forms.Textarea(attrs={'rows':3, 'cols':15}))
+    description = forms.CharField(
+        label="Beskriv anvendelse af Datasæt", 
+        widget=forms.Textarea(attrs={
+            'rows':3,
+             'cols':15,
+             'required': 'required', 
+             'oninvalid': "this.setCustomValidity('Dette felt skal udfyldes.')", 
+             'oninput': "this.setCustomValidity('')"
+             })
+    )
     dataset = forms.ModelChoiceField(queryset=Dataset.objects.all())
 
     class Meta:
