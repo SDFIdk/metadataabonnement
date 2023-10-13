@@ -1,0 +1,60 @@
+pipeline {
+    // https://plugins.jenkins.io/git-parameter
+    parameters {
+        gitParameter(name: "TAG",
+                     type: "PT_TAG",
+                     defaultValue: "master",
+                     sortMode: "DESCENDING_SMART")
+    }
+
+    environment {
+        // Name of the stack
+        DOCKER_STACK_NAME = "metadataabonnement"
+        // Name of the docker stack network from the container
+        DOCKER_STACK_NETWORK = "metadataabonnement"
+    }
+
+    agent {
+        node {
+            label "Utilhotel"
+            customWorkspace "/local/jenkins/metadataabonnement"
+        }
+    }
+
+    stages {
+        // Check if docker stack remove was successful
+        stage ("Remove Docker Stack") {
+            steps {
+                sh "docker stack rm ${DOCKER_STACK_NAME}"
+            }
+        }
+
+        stage ("Check Docker Network status") {
+            steps {
+                timeout(time: 60, unit: "SECONDS") {
+                    retry(20) {
+                        sh """
+                            if docker network inspect ${DOCKER_STACK_NETWORK} > /dev/null 2>&1; then
+                                echo "Network '${DOCKER_STACK_NETWORK}' still exists"
+                                sleep 3
+                                exit 1
+                            else
+                                echo "Network is successful removed"
+                            fi
+                        """
+                    }
+                }
+            }
+        }
+
+        stage ("Deploy") {
+            steps {
+                sh """
+                    BUILD_VERSION=${params.TAG} \
+                    docker stack deploy -c swarm.yml ${DOCKER_STACK_NAME} \
+                    --with-registry-auth --resolve-image always
+                """
+           }
+        }
+    }
+}
