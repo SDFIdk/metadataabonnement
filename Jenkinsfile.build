@@ -15,7 +15,7 @@ pipeline {
 	    string(name: "PROJECTPROPERTIES", defaultValue: "metadataabonnement python django manual", description: "the manual tag is mandetory!. Add tags to this project. Seperate with SPACE, NOT ','")
     }
 
-    enviroment {
+    environment {
         DEPENDENCYTRACK_LVL = "1"
         BUILD_VERSION = "${PROJECTVERSION}_v${BUILD_NUMBER}"
         // Use the PROJECTVERSION if it matches the name of the desired git branch
@@ -114,7 +114,7 @@ pipeline {
         
         stage("Trigger Deploy") {
             steps {
-                build job: "metadataabonnement deploy +web",
+                build job: "metadataabonnement Deploy +web",
                 parameters: [
                     string(name: "TAG", value: BUILD_VERSION),
                 ]
