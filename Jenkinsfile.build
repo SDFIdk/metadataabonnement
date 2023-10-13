@@ -1,0 +1,124 @@
+// NOTE: The "stage("Tag")" uses the first url defined, in this build the git url from jenkins config that pulls this pipeline.
+// $BUILD_NUMBER is a Jenkins provided variable
+// {prod/test}  Is it prod or test environment
+// GIT_REPO     URL to public repo
+// GIT_BRANCH   What branch should be downloaded from the public repo
+// {image}      The docker image without tag
+// {tag}        The docker image tag (ex: prod,test or latest) NOT something variable.
+// {tags}       Searchable tags in DependencyTrack
+//              Use `manual` for user build repos, other useful tags is: OS, codebase, etc.
+
+pipeline {
+    parameters {
+        string(name: "PROJECTNAME", defaultValue: "metadataabonnement", description: "Name of the project")
+        string(name: "PROJECTVERSION", defaultValue: "latest", description: "Version of the project")
+	    string(name: "PROJECTPROPERTIES", defaultValue: "metadataabonnement python django manual", description: "the manual tag is mandetory!. Add tags to this project. Seperate with SPACE, NOT ','")
+    }
+
+    enviroment {
+        DEPENDENCYTRACK_LVL = "1"
+        BUILD_VERSION = "${PROJECTVERSION}_v${BUILD_NUMBER}"
+        // Use the PROJECTVERSION if it matches the name of the desired git branch
+        // else change the value of the GIT_BRANCH here
+        GIT_BRANCH    = "main"
+    }
+
+    agent {
+        node {
+            label "Byggehotel"
+            customWorkspace "/local/jenkins/${PROJECTVERSION}"
+        }
+    }
+
+    stages {
+        // Pull git code if job also have a public repo
+        stage("Pull code") {
+            steps {
+                dir("public") {
+                    git credentialsId: "48c7f747-c6c3-40aa-9579-b99fc976b0d4",
+                        url: "https://github.com/SDFIdk/metadataabonnement",
+                        branch: GIT_BRANCH
+                }
+            }
+        }
+
+        // Build Docker Image
+        // PROJECTVERSION tag is mandatory for Dependency Track
+        // BUILD_VERSION tag is needed for deploy job
+        stage("Build") {
+            steps {
+                sh """
+                    docker build -f Dockerfile \
+                    --tag kortforsyningen/${PROJECTNAME}:${BUILD_VERSION} \
+                    --tag kortforsyningen/${PROJECTNAME}:${PROJECTVERSION} \
+                    .
+                """
+            }
+        }
+
+        stage("Push") {
+            steps {
+                sh "docker image push kortforsyningen/${PROJECTNAME}:${BUILD_VERSION}"
+                sh "docker image push kortforsyningen/${PROJECTNAME}:${PROJECTVERSION}"
+            }
+        }
+
+        stage("Tag") {
+            steps {
+                withCredentials([gitUsernamePassword(credentialsId: "48c7f747-c6c3-40aa-9579-b99fc976b0d4", gitToolName: "Default")]) {
+                     // Fetch all remotes
+                    sh "git fetch --all"
+                    // Create local tag
+                    sh "git tag ${BUILD_VERSION}"
+                    // Push the tag to remote
+                    sh "git push origin ${BUILD_VERSION}"
+                }
+            }
+        }
+
+        // DependencyTrack and SecurityChecker
+        stage("Building sbom") {
+            steps{
+                sh """
+                    syft kortforsyningen/${PROJECTNAME}:${PROJECTVERSION} -o cyclonedx > bom.sbom
+                """
+            }
+        }
+        
+        stage ("Pull Pipeline steps from git") {
+            steps {
+                dir("") {
+                    git credentialsId: "48c7f747-c6c3-40aa-9579-b99fc976b0d4",
+                        url: "https://github.com/SDFIdk/Security_Checker",
+                        branch: "main"
+                }
+            }
+        }
+ 	    
+        stage("Trigger Security Checker Job") {
+            steps {
+                script {
+                    load "pipeline_steps/pipeline_step.trigger_security_checker"
+                }		
+            }
+        }
+	    
+        stage("DependencyTrack Uploader Local") {
+            steps {
+                script{
+		            load "pipeline_steps/pipeline_step.dependency_track_local_upload"
+		        }                  
+            }
+        }
+        //End DependencyTrack and SecurityChecker
+        
+        stage("Trigger Deploy") {
+            steps {
+                build job: "metadataabonnement deploy +web",
+                parameters: [
+                    string(name: "TAG", value: BUILD_VERSION),
+                ]
+            }
+        }
+    }
+}
