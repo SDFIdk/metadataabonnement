@@ -19,7 +19,7 @@
 <ul>
     {% for dataset in user_datasets %}
     <li>
-        {{ dataset.TITEL }} - {{ dataset.userdataset.description }}
+        {{ dataset.dataset.TITEL }} - {{ dataset.description }}
         <!-- Remove Dataset Form -->
         <form method="post" style="display: inline;">
             {% csrf_token %}

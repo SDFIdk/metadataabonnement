@@ -1,5 +1,8 @@
 from django.urls import path
+
+# from mysite.amazing import settings
 from . import views
+# from django.conf.urls.static import static
 
 urlpatterns = [
     path('homepage/', views.home_page, name='home_page'),
@@ -12,4 +15,4 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout_view'),
     path('admin_page/', views.admin_page_view, name='admin_page'),
 
-]
+] # + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

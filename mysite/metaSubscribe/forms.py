@@ -1,6 +1,7 @@
 from django import forms
 from .models import Dataset
 from .models import CustomUser
+from .models import UserDataset
 
 
 
@@ -17,15 +18,15 @@ class RegisterDatasetForm(forms.ModelForm):
     description = forms.CharField(
         label="Beskriv anvendelse af Datasæt", 
         widget=forms.Textarea(attrs={
-            'rows':3,
-             'cols':15,
-             'required': 'required', 
-             'oninvalid': "this.setCustomValidity('Dette felt skal udfyldes.')", 
-             'oninput': "this.setCustomValidity('')"
-             })
+            'rows': 3,
+            'cols': 15,
+            'required': 'required', 
+            'oninvalid': "this.setCustomValidity('Dette felt skal udfyldes.')", 
+            'oninput': "this.setCustomValidity('')"
+        })
     )
     dataset = forms.ModelChoiceField(queryset=Dataset.objects.all())
 
     class Meta:
-        model = CustomUser.datasets.through  # This is the UserDataset table created implicitly
+        model = UserDataset  # Use the UserDataset model
         fields = ['dataset', 'description']

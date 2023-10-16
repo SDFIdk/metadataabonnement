@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import UserLoginForm
 from django.http import HttpResponse
 from .models import Dataset
-from .models import CustomUser
+from .models import CustomUser, Dataset, UserDataset
 from .forms import RegisterDatasetForm
 
 def admin_page_view(request):
@@ -34,13 +34,10 @@ def login_view(request):
 
     return render(request, 'login.html', {'form': form})
 
-
-from django.shortcuts import render, redirect
-
 def personal_page_view(request):
     user_id = request.session.get('user_id')
     if not user_id:
-        return redirect('login_view') # Redirect to login if not logged in
+        return redirect('login_view')  # Redirect to login if not logged in
 
     user = CustomUser.objects.get(USERID=user_id)
 
@@ -61,14 +58,17 @@ def personal_page_view(request):
             if isinstance(selected_datasets, Dataset):
                 selected_datasets = [selected_datasets]
             
-            # Add the selected datasets to the user's datasets
-            user.datasets.add(*selected_datasets)
+            for dataset in selected_datasets:
+                description = form.cleaned_data['description']
+                
+                # Create a record in metaSubscribe_userdataset
+                UserDataset.objects.create(customuser=user, dataset=dataset, description=description)
             
             return redirect('personal_page_view')
     else:
         form = RegisterDatasetForm()
 
-    user_datasets = user.datasets.all()
+    user_datasets = UserDataset.objects.filter(customuser=user)  # Retrieve user's datasets with descriptions
 
     context = {
         'user': user,
@@ -76,6 +76,7 @@ def personal_page_view(request):
         'user_datasets': user_datasets,
     }
     return render(request, 'personal_page.html', context)
+
 
 
 
