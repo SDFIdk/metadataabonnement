@@ -13,7 +13,7 @@ services:
             mode: replicated
             replicas: 1
             labels:
-                - traefik.port=${PORT}
+                - traefik.port=3000
                 - traefik.docker.network=traefik_traefik-net
                 - "traefik.frontend.rule=Host: metadataabonnement.cuddlefish.intern"
         networks:
