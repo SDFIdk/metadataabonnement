@@ -16,7 +16,8 @@ COPY entrypoint.sh /
 RUN apt-get update \
     && apt-get upgrade -y \
     && rm -rf /var/lib/apt/lists/* \
-    && pip install --no-cache-dir -r /app/requirements.txt
+    && pip install --no-cache-dir -r /app/requirements.txt \
+    && pip install --upgrade pip django
 
 USER ${UNAME}
 
