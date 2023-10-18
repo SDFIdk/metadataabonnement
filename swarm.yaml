@@ -6,7 +6,7 @@ services:
             TZ: Europe/Copenhagen
             DATABASE_NAME: metadataabonnement
             DATABASE_USER: metadataabonnement
-            DATABASE_PASSWORD: 33Proud-44GristlemummystrictTwiddling
+            DATABASE_PASSWORD: Mowing85/Stiipulatebarrette9682
             DATABASE_HOST: dbprimo.cuddlefish.intern
             DATABASE_PORT: 51715
         deploy:
