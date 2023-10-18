@@ -84,7 +84,7 @@ pipeline {
                 """
             }
         }
-        
+
         stage ("Pull Pipeline steps from git") {
             steps {
                 dir("") {
@@ -94,31 +94,23 @@ pipeline {
                 }
             }
         }
- 	    
+
         stage("Trigger Security Checker Job") {
             steps {
                 script {
                     load "pipeline_steps/pipeline_step.trigger_security_checker"
-                }		
+                }
             }
         }
-	    
+
         stage("DependencyTrack Uploader Local") {
             steps {
                 script{
 		            load "pipeline_steps/pipeline_step.dependency_track_local_upload"
-		        }                  
+		        }
             }
         }
         //End DependencyTrack and SecurityChecker
-        
-        stage("Trigger Deploy") {
-            steps {
-                build job: "metadataabonnement Deploy +web",
-                parameters: [
-                    string(name: "TAG", value: BUILD_VERSION),
-                ]
-            }
-        }
+
     }
 }
