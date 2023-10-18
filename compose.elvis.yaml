@@ -1,0 +1,32 @@
+services:
+
+    django:
+        image: elvis/meta:1
+        restart: unless-stopped
+        ports:
+                - "3000:3000"
+        working_dir: /app
+        environment:
+            TZ: Europe/Copenhagen
+            DATABASE_NAME: metadataabonnement
+            DATABASE_USER: metadataabonnement
+            DATABASE_PASSWORD: metadataabonnement
+            DATABASE_HOST: db
+            DATABASE_PORT: 5432
+        networks:
+            - default
+
+    db:
+        image: postgres
+        restart: always
+        environment:
+            POSTGRES_DB: metadataabonnement
+            POSTGRES_USER: metadataabonnement
+            POSTGRES_PASSWORD: metadataabonnement
+        networks:
+            - default
+
+
+networks:
+    default:
+        name: meta_subscribe

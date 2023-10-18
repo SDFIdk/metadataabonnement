@@ -1,19 +1,23 @@
 FROM python:3.11.5-slim
 
-RUN apt update \
-	 && apt upgrade -y
-
 ARG UNAME=niksk
 ARG UID=2022
 ARG GID=4004
 
-RUN groupadd -g ${GID} ${UNAME}
-RUN useradd -m -u ${UID} -g ${GID} -o -s /bin/bash ${UNAME}
+RUN groupadd -g ${GID} ${UNAME} \
+    && useradd -m -u ${UID} -g ${GID} -o -s /bin/bash ${UNAME}
+
+
+WORKDIR /app
+
+COPY mysite /app
+COPY entrypoint.sh /app
+
+RUN apt-get update \
+    && apt-get upgrade -y \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir -r /app/requirements.txt
 
 USER ${UNAME}
 
-WORKDIR /home/${UNAME}
-
-COPY requirements.txt /home/${UNAME}
-
-RUN pip install --no-cache-dir -r /home/${UNAME}/requirements.txt
+ENTRYPOINT ["/app/entrypoint.sh"]

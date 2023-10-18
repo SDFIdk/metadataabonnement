@@ -6,7 +6,6 @@ services:
     ports:
       - "${PORT}:${PORT}"
     working_dir: /home/${UNAME}/${PROJECT_DIR}
-    command: python manage.py runserver 0.0.0.0:${PORT}
     environment:
       TZ: Europe/Copenhagen
       DATABASE_NAME: ${DATABASE_NAME}
@@ -14,8 +13,6 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
-    volumes:
-      - ./${PROJECT_DIR}:/home/${UNAME}/${PROJECT_DIR}
     networks:
       - default
 
