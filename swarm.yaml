@@ -2,8 +2,6 @@ services:
 
     django:
         image: kortforsyningen/metadataabonnement:latest
-        working_dir: /home/${UNAME}/${PROJECT_DIR}
-        command: python manage.py runserver 0.0.0.0:${PORT}
         environment:
             TZ: Europe/Copenhagen
             DATABASE_NAME: metadataabonnement
