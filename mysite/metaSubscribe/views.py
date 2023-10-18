@@ -44,8 +44,13 @@ def personal_page_view(request):
     # Handle the dataset removal
     if 'remove_dataset_id' in request.POST:
         dataset_id = request.POST['remove_dataset_id']
-        dataset = Dataset.objects.get(pk=dataset_id)
-        user.datasets.remove(dataset)
+        try:
+            # The ID here should refer to the UserDataset object, not the Dataset object.
+            user_dataset = UserDataset.objects.get(pk=dataset_id, customuser=user)
+            user_dataset.delete()
+        except UserDataset.DoesNotExist:
+            # Handle the error if no entry matches
+            pass  # Or provide a message or logging
         return redirect('personal_page_view')
 
     # Handle dataset registration
