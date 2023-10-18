@@ -11,7 +11,7 @@ RUN groupadd -g ${GID} ${UNAME} \
 WORKDIR /app
 
 COPY mysite /app
-COPY entrypoint.sh /app
+COPY entrypoint.sh /
 
 RUN apt-get update \
     && apt-get upgrade -y \
@@ -20,4 +20,4 @@ RUN apt-get update \
 
 USER ${UNAME}
 
-ENTRYPOINT ["/app/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]

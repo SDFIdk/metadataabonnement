@@ -14,7 +14,7 @@ services:
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
     volumes:
-      - ./${PROJECT_DIR}:/app
+      - ./${PROJECT_DIR}:/app/
     networks:
       - default
 
