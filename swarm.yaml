@@ -1,0 +1,28 @@
+services:
+
+    django:
+        image: kortforsyningen/metadataabonnement:latest
+        working_dir: /home/${UNAME}/${PROJECT_DIR}
+        command: python manage.py runserver 0.0.0.0:${PORT}
+        environment:
+            TZ: Europe/Copenhagen
+            DATABASE_NAME: metadataabonnement
+            DATABASE_USER: metadataabonnement
+            DATABASE_PASSWORD: 33Proud-44GristlemummystrictTwiddling
+            DATABASE_HOST: dbprimo.cuddlefish.intern
+            DATABASE_PORT: 51715
+        deploy:
+            mode: replicated
+            replicas: 1
+            labels:
+                - traefik.port=${PORT}
+                - traefik.docker.network=traefik_traefik-net
+                - "traefik.frontend.rule=Host: metadataabonnement.cuddlefish.intern"
+        networks:
+            - traefik-net
+
+
+networks:
+    traefik-net:
+        name: traefik_traefik-net
+        external: true
