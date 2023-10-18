@@ -51,7 +51,7 @@ pipeline {
             steps {
                 sh """
                     BUILD_VERSION=${params.TAG} \
-                        docker stack deploy -c swarm.yml ${DOCKER_STACK_NAME} \
+                        docker stack deploy -c swarm.yaml ${DOCKER_STACK_NAME} \
                         --with-registry-auth --resolve-image always
                 """
            }
