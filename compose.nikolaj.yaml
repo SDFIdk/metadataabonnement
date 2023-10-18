@@ -4,8 +4,8 @@ services:
     build: .
     restart: always
     ports:
-      - "${PORT}:${PORT}"
-    working_dir: /home/${UNAME}/${PROJECT_DIR}
+      - "${PORT}:3000"
+    working_dir: /app
     environment:
       TZ: Europe/Copenhagen
       DATABASE_NAME: ${DATABASE_NAME}
@@ -13,6 +13,8 @@ services:
       DATABASE_PASSWORD: ${DATABASE_PASSWORD}
       DATABASE_HOST: ${DATABASE_HOST}
       DATABASE_PORT: ${DATABASE_PORT}
+    volumes:
+      - ./${PROJECT_DIR}:/app
     networks:
       - default
 
