@@ -2,3 +2,5 @@ Makefile
 README
 compose-init.yaml
 compose.yaml
+.git
+.gitignore
