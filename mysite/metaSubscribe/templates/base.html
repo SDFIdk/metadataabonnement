@@ -1,25 +1,22 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MetaSubscribe</title>
-    <!-- {% load static %}
-    <link rel="stylesheet" href="{% static '/MetaSubscribe/static/designsystem.css' %}"> -->
+    
+    <link rel="stylesheet" href="{% static 'designsystem.css' %}">
 </head>
 <body>
 
-    <!-- <a class="ds-logo-micro" href="#logos">
+    <a class="ds-logo-micro" href="#logos">
         <strong>Dataforsyningen</strong>
         <span>Styrelsen for Dataforsyning og Infrastruktur</span>
-      </a> -->
+    </a> 
 
 <nav>
     <a href="{% url 'home_page' %}">Home</a>
-    <!-- <a href="{% url 'users_view' %}">Users</a>
-    <a href="{% url 'datasets_view' %}">Datasets</a>
-    <a href="{% url 'user_datasets_view' %}">User Datasets</a>
-    <a href="{% url 'dataset_users_view' %}">Datasets and Users</a> -->
     <a href="{% url 'admin_page' %}">Admin</a>
 
 </nav>

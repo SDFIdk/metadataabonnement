@@ -95,8 +95,17 @@ def dataset_users_view(request):
 
 
 def user_datasets_view(request):
-    users = CustomUser.objects.prefetch_related('datasets').all()
-    return render(request, 'user_datasets.html', {'users': users})
+    # This query might be inefficient if the number of users is large.
+    # Consider using pagination or filtering.
+    users = CustomUser.objects.all()
+
+    # Prepare a structure to hold datasets with descriptions per user
+    user_dataset_info = {}
+    for user in users:
+        user_datasets = UserDataset.objects.filter(customuser=user).select_related('dataset')
+        user_dataset_info[user] = user_datasets  # This pairs the user with their respective datasets and descriptions
+
+    return render(request, 'user_datasets.html', {'user_dataset_info': user_dataset_info})
 
 def users_view(request):
     users = CustomUser.objects.all()
