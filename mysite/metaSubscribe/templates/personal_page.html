@@ -24,7 +24,7 @@
         <form method="post" action="{% url 'personal_page_view' %}" style="display: inline;">
             {% csrf_token %}
             <input type="hidden" name="remove_dataset_id" value="{{ dataset.id }}">
-            <button type="submit" style="background: none;border: none;color: red;cursor: pointer;">Fjern</button>
+            <button type="submit">Fjern</button>
         </form>
     </li>
     {% endfor %}

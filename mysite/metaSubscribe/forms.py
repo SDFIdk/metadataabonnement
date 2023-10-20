@@ -13,6 +13,10 @@ class UserLoginForm(forms.Form):
         if not email.endswith('@sdfi.dk'):
             raise forms.ValidationError("Email must end with '@sdfi.dk'")
         return email
+    
+class AdminLoginForm(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput)
 
 class RegisterDatasetForm(forms.ModelForm):
     description = forms.CharField(
@@ -30,3 +34,6 @@ class RegisterDatasetForm(forms.ModelForm):
     class Meta:
         model = UserDataset  # Use the UserDataset model
         fields = ['dataset', 'description']
+
+
+

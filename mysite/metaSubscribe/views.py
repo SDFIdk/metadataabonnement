@@ -1,12 +1,53 @@
 from django.shortcuts import render, redirect
-from .forms import UserLoginForm
+from .forms import UserLoginForm, AdminLoginForm
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+# from .forms import AdminLoginForm
 from django.http import HttpResponse
 from .models import Dataset
 from .models import CustomUser, Dataset, UserDataset
 from .forms import RegisterDatasetForm
+import os
 
 def admin_page_view(request):
+    if not request.session.get('admin_logged_in'):
+        return redirect('admin_login')
     return render(request, 'admin_page.html')
+
+def admin_login(request):
+    if request.method == "POST":
+        form = AdminLoginForm(request.POST)
+        if form.is_valid():
+            admin_email = os.environ.get("ADMIN_EMAIL")
+            admin_password = os.environ.get("ADMIN_PASSWORD")
+
+            email = form.cleaned_data.get("email")
+            password = form.cleaned_data.get("password")
+
+            if email == admin_email and password == admin_password:
+                request.session['admin_logged_in'] = True
+                return redirect('admin_page')  # redirect to the admin page view
+            else:
+                messages.error(request, 'Invalid admin credentials')
+    else:
+        form = AdminLoginForm()
+
+    return render(request, 'homepage.html', {'form': form})
+
+@login_required
+def admin_page(request):
+    if not request.session.get('admin_logged_in'):
+        return redirect('admin_login')  # if not logged in as admin, redirect to admin login
+
+    # ... (code to handle admin page)
+    return render(request, 'admin_page.html')
+
+def logout_admin(request):
+    logout(request)
+    if 'admin_logged_in' in request.session:
+        del request.session['admin_logged_in']
+    return redirect('homepage')  # redirect to the homepage or wherever appropriate
 
 
 def logout_view(request):
@@ -32,7 +73,7 @@ def login_view(request):
     else:
         form = UserLoginForm()
 
-    return render(request, 'login.html', {'form': form})
+    return render(request, 'login.html', {'form': form}) 
 
 def personal_page_view(request):
     user_id = request.session.get('user_id')
@@ -88,6 +129,10 @@ def personal_page_view(request):
 
 
 def dataset_users_view(request):
+
+    if not request.session.get('admin_logged_in'):
+        return redirect('admin_login')
+    
     # Filter out datasets without users
     datasets_with_users = Dataset.objects.filter(users__isnull=False).distinct().prefetch_related('users')
 
@@ -95,6 +140,10 @@ def dataset_users_view(request):
 
 
 def user_datasets_view(request):
+
+    if not request.session.get('admin_logged_in'):
+        return redirect('admin_login')
+    
     # This query might be inefficient if the number of users is large.
     # Consider using pagination or filtering.
     users = CustomUser.objects.all()
@@ -108,6 +157,9 @@ def user_datasets_view(request):
     return render(request, 'user_datasets.html', {'user_dataset_info': user_dataset_info})
 
 def users_view(request):
+    if not request.session.get('admin_logged_in'):
+        return redirect('admin_login')
+    
     users = CustomUser.objects.all()
     return render(request, 'users.html', {'users': users})
 
@@ -117,27 +169,34 @@ def datasets_view(request):
     return render(request, 'datasets.html', {'datasets': datasets})
 
 def home_page(request):
-    if 'user_id' in request.session:
-        return redirect('personal_page_view')  # If the user is already logged in, redirect to personal page
+    user_form = UserLoginForm(request.POST or None)
+    admin_form = AdminLoginForm(request.POST or None)  # new admin form instance
 
     if request.method == "POST":
-        form = UserLoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            user = CustomUser.objects.filter(EMAIL=email).first()
+        # Check which form has been submitted
+        if 'user_login' in request.POST and user_form.is_valid():
+            # Your existing user login logic...
+            email = user_form.cleaned_data.get('email')
+            # ... (rest of your user login logic)
+            return redirect('personal_page_view')
 
-            # If the user doesn't exist, create them
-            if not user:
-                user = CustomUser.objects.create(EMAIL=email)
+        elif 'admin_login' in request.POST and admin_form.is_valid():
+            # Logic for admin login, similar to what you have in 'admin_login' view
+            admin_email = os.environ.get("ADMIN_EMAIL")
+            admin_password = os.environ.get("ADMIN_PASSWORD")
 
-            # Set user id in session to indicate they're logged in
-            request.session['user_id'] = user.USERID
-            return redirect('personal_page_view') # Redirect to personal page
-    else:
-        form = UserLoginForm()
+            email = admin_form.cleaned_data.get("email")
+            password = admin_form.cleaned_data.get("password")
 
-    return render(request, 'homepage.html', {'form': form})
+            if email == admin_email and password == admin_password:
+                request.session['admin_logged_in'] = True
+                return redirect('admin_page')
 
-    # return HttpResponse("Hello human, I am the messenger and this is the homepage!")
+            else:
+                messages.error(request, 'Invalid admin credentials')
+
+    context = {'user_form': user_form, 'admin_form': admin_form}  # pass both forms in the context
+    return render(request, 'homepage.html', context)
+
 
 
