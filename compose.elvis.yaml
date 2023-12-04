@@ -13,8 +13,8 @@ services:
             DATABASE_PASSWORD: metadataabonnement
             DATABASE_HOST: db
             DATABASE_PORT: 5432
-            ADMIN_EMAIL: niksk@sdfi.dk
-            ADMIN_PASSWORD: RyeyrE98AefVXNf8REaGyNDw
+            ADMIN_EMAIL: ${ADMIN_EMAIL}
+            ADMIN_PASSWORD: ${ADMIN_PASSWORD}
         networks:
             - default
 
