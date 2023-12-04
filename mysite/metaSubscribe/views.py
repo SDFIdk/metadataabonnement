@@ -47,7 +47,7 @@ def logout_admin(request):
     logout(request)
     if 'admin_logged_in' in request.session:
         del request.session['admin_logged_in']
-    return redirect('homepage')  # redirect to the homepage or wherever appropriate
+    return redirect('home_page')  # redirect to the homepage or wherever appropriate
 
 
 def logout_view(request):
@@ -56,29 +56,10 @@ def logout_view(request):
     return redirect('home_page')
 
 
-def login_view(request):
-    if request.method == "POST":
-        form = UserLoginForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data.get('email')
-            user = CustomUser.objects.filter(EMAIL=email).first()
-
-            # If the user doesn't exist, create them
-            if not user:
-                user = CustomUser.objects.create(EMAIL=email)
-
-            # Set user id in session to indicate they're logged in
-            request.session['user_id'] = user.USERID
-            return redirect('personal_page_view') # Redirect to personal page
-    else:
-        form = UserLoginForm()
-
-    return render(request, 'login.html', {'form': form}) 
-
 def personal_page_view(request):
     user_id = request.session.get('user_id')
     if not user_id:
-        return redirect('login_view')  # Redirect to login if not logged in
+        return redirect('home_page')  # Redirect to login if not logged in
 
     user = CustomUser.objects.get(USERID=user_id)
 
@@ -170,18 +151,22 @@ def datasets_view(request):
 
 def home_page(request):
     user_form = UserLoginForm(request.POST or None)
-    admin_form = AdminLoginForm(request.POST or None)  # new admin form instance
+    admin_form = AdminLoginForm(request.POST or None)
 
     if request.method == "POST":
-        # Check which form has been submitted
         if 'user_login' in request.POST and user_form.is_valid():
-            # Your existing user login logic...
             email = user_form.cleaned_data.get('email')
-            # ... (rest of your user login logic)
-            return redirect('personal_page_view')
+            user = CustomUser.objects.filter(EMAIL=email).first()
+
+            # If the user doesn't exist, create them
+            if not user:
+                user = CustomUser.objects.create(EMAIL=email)
+
+            # Set user id in session to indicate they're logged in
+            request.session['user_id'] = user.USERID
+            return redirect('personal_page_view')  # Redirect to the personal page
 
         elif 'admin_login' in request.POST and admin_form.is_valid():
-            # Logic for admin login, similar to what you have in 'admin_login' view
             admin_email = os.environ.get("ADMIN_EMAIL")
             admin_password = os.environ.get("ADMIN_PASSWORD")
 
@@ -191,12 +176,10 @@ def home_page(request):
             if email == admin_email and password == admin_password:
                 request.session['admin_logged_in'] = True
                 return redirect('admin_page')
-
             else:
                 messages.error(request, 'Invalid admin credentials')
 
-    context = {'user_form': user_form, 'admin_form': admin_form}  # pass both forms in the context
+    context = {'user_form': user_form, 'admin_form': admin_form}
     return render(request, 'homepage.html', context)
-
 
 

@@ -8,5 +8,11 @@
     <li><a href="{% url 'user_datasets_view' %}">Brugere : Datasæt</a></li>
     <li><a href="{% url 'dataset_users_view' %}">Datasæt : Brugere</a></li>
 </ul>
+<br>
+<form action="{% url 'logout_admin' %}" method="post">
+    {% csrf_token %}
+    <button type="submit">Logout</button>
+</form>
+
 
 {% endblock %}
