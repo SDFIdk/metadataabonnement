@@ -9,8 +9,8 @@ services:
             DATABASE_PASSWORD: Mowing85/Stiipulatebarrette9682
             DATABASE_HOST: dbprimo.cuddlefish.intern
             DATABASE_PORT: 51715
-            ADMIN_EMAIL: ${ADMIN_EMAIL}
-            ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+            ADMIN_EMAIL: niksk@sdfi.dk
+            ADMIN_PASSWORD: RyeyrE98AefVXNf8REaGyNDw
         deploy:
             mode: replicated
             replicas: 1
