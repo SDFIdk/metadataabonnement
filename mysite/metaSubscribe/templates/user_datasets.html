@@ -3,15 +3,17 @@
 {% block content %}
 <h1>Brugere : registrerede datasæt.</h1>
 <ul>
-{% for user, user_datasets in user_dataset_info.items %}
-    <li>
-        {{ user.EMAIL }}:
-        <ul>
-        {% for user_dataset in user_datasets %}
-            <li>{{ user_dataset.dataset.TITEL }} - {{ user_dataset.description }}</li>
-        {% endfor %}
-        </ul>
-    </li>
-{% endfor %}
+    {% for user, user_datasets in user_dataset_info.items %}
+        {% if user_datasets %}
+            <li>
+                {{ user.EMAIL }}:
+                <ul>
+                    {% for user_dataset in user_datasets %}
+                        <li>{{ user_dataset.dataset.TITEL }} - {{ user_dataset.description }}</li>
+                    {% endfor %}
+                </ul>
+            </li>
+        {% endif %}
+    {% endfor %}
 </ul>
 {% endblock %}

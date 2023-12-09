@@ -10,6 +10,16 @@ from .models import CustomUser, Dataset, UserDataset
 from .forms import RegisterDatasetForm
 import os
 
+def delete_user(request, user_id):
+    if not request.session.get('admin_logged_in'):
+        return redirect('admin_login')
+
+    # Get the user and delete
+    user = CustomUser.objects.get(USERID=user_id)
+    user.delete()  # This will delete the user and all related data
+
+    return redirect('users_view')  # Redirect back to the users page
+
 def admin_page_view(request):
     if not request.session.get('admin_logged_in'):
         return redirect('admin_login')
@@ -90,6 +100,12 @@ def personal_page_view(request):
                 
                 # Create a record in metaSubscribe_userdataset
                 UserDataset.objects.create(customuser=user, dataset=dataset, description=description)
+
+                # Create a record in UserDataset
+                """UserDataset.objects.create(customuser=user, dataset=dataset, description=description)"""
+
+                # Add the dataset to the user's datasets
+                user.datasets.add(dataset)
             
             return redirect('personal_page_view')
     else:
@@ -110,14 +126,21 @@ def personal_page_view(request):
 
 
 def dataset_users_view(request):
-
     if not request.session.get('admin_logged_in'):
         return redirect('admin_login')
-    
-    # Filter out datasets without users
-    datasets_with_users = Dataset.objects.filter(users__isnull=False).distinct().prefetch_related('users')
 
-    return render(request, 'dataset_users.html', {'datasets': datasets_with_users})
+    # Fetch all datasets that have at least one user associated via UserDataset
+    datasets_with_users = Dataset.objects.filter(userdataset__isnull=False).distinct()
+
+    # Create a data structure to hold users per dataset
+    dataset_user_info = {}
+    for dataset in datasets_with_users:
+        # Get users associated with each dataset
+        users_for_dataset = CustomUser.objects.filter(userdataset__dataset=dataset)
+        dataset_user_info[dataset] = users_for_dataset
+
+    return render(request, 'dataset_users.html', {'dataset_user_info': dataset_user_info})
+
 
 
 def user_datasets_view(request):

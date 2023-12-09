@@ -16,5 +16,6 @@ urlpatterns = [
     path('admin_login/', views.home_page, name='admin_login'),
     path('admin_page/', views.admin_page, name='admin_page'),
     path('logout_admin/', views.logout_admin, name='logout_admin'),
+    path('delete_user/<int:user_id>/', views.delete_user, name='delete_user'),
 
 ] 

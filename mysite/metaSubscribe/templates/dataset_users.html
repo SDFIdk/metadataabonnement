@@ -4,11 +4,11 @@
 <h2>Datasæt : Registrerede Brugere.</h2>
 
 <ul>
-    {% for dataset in datasets %}
+    {% for dataset, users in dataset_user_info.items %}
         <li>
             {{ dataset.TITEL }}:
             <ul>
-                {% for user in dataset.users.all %}
+                {% for user in users %}
                     <li>{{ user.EMAIL }}</li>
                 {% endfor %}
             </ul>
