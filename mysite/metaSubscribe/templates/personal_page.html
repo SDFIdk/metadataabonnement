@@ -15,7 +15,7 @@
     <button type="submit">Registrer</button>
 </form>
 
-<h3>Registrerede Datasæt for bruger: {{ user.EMAIL }}</h3>
+<h3>Registrerede Datasæt</h3>   <!-- for bruger: {{ user.EMAIL }}-->
 <ul>
     {% for dataset in user_datasets %}
     <li>
@@ -24,7 +24,7 @@
         <form method="post" action="{% url 'personal_page_view' %}" style="display: inline;">
             {% csrf_token %}
             <input type="hidden" name="remove_dataset_id" value="{{ dataset.id }}">
-            <button type="submit">Fjern</button>
+            <button type="submit">Slet</button>
         </form>
     </li>
     {% endfor %}

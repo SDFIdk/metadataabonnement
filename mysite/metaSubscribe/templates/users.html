@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<button onclick="window.location.href='{% url 'admin_page' %}';">Admin Menu</button>
 <h1>Brugere</h1>
 <ul>
     {% for user in users %}
@@ -9,7 +10,7 @@
             <!-- Delete Form -->
             <form action="{% url 'delete_user' user.USERID %}" method="post" style="display: inline;">
                 {% csrf_token %}
-                <button type="submit" onclick="return confirm('Er du sikker på at du vil slette denne bruger?');">Slet Bruger</button>
+                <button type="submit" onclick="return confirm('Dette sletter brugeren og alle tilhørende registreringer. Er du sikker på at du vil slette denne bruger?');">Slet Bruger</button>
             </form>
         </li>
     {% endfor %}

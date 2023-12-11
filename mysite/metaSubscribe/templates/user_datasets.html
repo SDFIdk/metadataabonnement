@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<button onclick="window.location.href='{% url 'admin_page' %}';">Admin Menu</button>
 <h1>Brugere : registrerede datasæt.</h1>
 <ul>
     {% for user, user_datasets in user_dataset_info.items %}

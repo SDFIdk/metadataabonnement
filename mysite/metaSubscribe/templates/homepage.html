@@ -6,7 +6,7 @@
 <form method="post">
     {% csrf_token %}
     {{ user_form.as_p }}  <!-- Change to user_form -->
-    <button type="submit" name="user_login">Login/Registrer</button>  
+    <button type="submit" name="user_login">Log ind/Registrer</button>  
 </form>
 
 {% if messages %}
@@ -18,11 +18,11 @@
 {% endif %}
 
 <!-- Admin Login Form Here -->
-<h3>Admin Login</h3>
+<h3>Admin</h3>
 <form method="post">
     {% csrf_token %}
     {{ admin_form.as_p }}  <!-- Change to admin_form -->
-    <button type="submit" name="admin_login">Login</button>  
+    <button type="submit" name="admin_login">Log ind</button>  
 </form>
 
 {% endblock %}

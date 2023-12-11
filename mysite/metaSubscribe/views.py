@@ -69,7 +69,8 @@ def logout_view(request):
 def personal_page_view(request):
     user_id = request.session.get('user_id')
     if not user_id:
-        return redirect('home_page')  # Redirect to login if not logged in
+        # Redirect to login if not logged in
+        return redirect('home_page')  
 
     user = CustomUser.objects.get(USERID=user_id)
 
@@ -77,41 +78,30 @@ def personal_page_view(request):
     if 'remove_dataset_id' in request.POST:
         dataset_id = request.POST['remove_dataset_id']
         try:
-            # The ID here should refer to the UserDataset object, not the Dataset object.
             user_dataset = UserDataset.objects.get(pk=dataset_id, customuser=user)
             user_dataset.delete()
         except UserDataset.DoesNotExist:
             # Handle the error if no entry matches
             pass  # Or provide a message or logging
-        return redirect('personal_page_view')
 
-    # Handle dataset registration
     if request.method == "POST":
         form = RegisterDatasetForm(request.POST)
         if form.is_valid():
-            selected_datasets = form.cleaned_data.get('dataset')
-            
-            # Ensure selected_datasets is iterable
-            if isinstance(selected_datasets, Dataset):
-                selected_datasets = [selected_datasets]
-            
-            for dataset in selected_datasets:
-                description = form.cleaned_data['description']
-                
-                # Create a record in metaSubscribe_userdataset
-                UserDataset.objects.create(customuser=user, dataset=dataset, description=description)
+            selected_dataset = form.cleaned_data.get('dataset')
+            description = form.cleaned_data.get('description')
 
-                # Create a record in UserDataset
-                """UserDataset.objects.create(customuser=user, dataset=dataset, description=description)"""
+            # Create a record in UserDataset
+            UserDataset.objects.create(customuser=user, dataset=selected_dataset, description=description)
 
-                # Add the dataset to the user's datasets
-                user.datasets.add(dataset)
-            
             return redirect('personal_page_view')
     else:
-        form = RegisterDatasetForm()
+        # Get IDs of datasets already registered by the user
+        registered_dataset_ids = UserDataset.objects.filter(customuser=user).values_list('dataset_id', flat=True)
+        
+        # Initialize the form with these datasets excluded
+        form = RegisterDatasetForm(exclude_datasets=registered_dataset_ids)
 
-    user_datasets = UserDataset.objects.filter(customuser=user)  # Retrieve user's datasets with descriptions
+    user_datasets = UserDataset.objects.filter(customuser=user)
 
     context = {
         'user': user,
@@ -119,6 +109,7 @@ def personal_page_view(request):
         'user_datasets': user_datasets,
     }
     return render(request, 'personal_page.html', context)
+
 
 
 

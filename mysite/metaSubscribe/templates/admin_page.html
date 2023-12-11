@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Admin Dashboard</h2>
+<h2>Admin Menu</h2>
 
 <ul>
     <li><a href="{% url 'users_view' %}">Brugere</a></li>
@@ -11,7 +11,7 @@
 <br>
 <form action="{% url 'logout_admin' %}" method="post">
     {% csrf_token %}
-    <button type="submit">Logout</button>
+    <button type="submit">Log ud</button>
 </form>
 
 
