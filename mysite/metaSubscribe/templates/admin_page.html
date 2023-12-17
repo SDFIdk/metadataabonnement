@@ -1,12 +1,9 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Admin Menu</h2>
-
-<ul>
-    <li><a href="{% url 'users_view' %}">Brugere</a></li>
-    <li><a href="{% url 'user_datasets_view' %}">Brugere : Datasæt</a></li>
-    <li><a href="{% url 'dataset_users_view' %}">Datasæt : Brugere</a></li>
+<p><span style="font-size: 20px;font-weight: 800;">Admin Menu</span></p>
+    <li><a href="{% url 'users_view' %}"><span style="font-size: 20px;font-weight: 800;">Brugere</span></a></li>
+    <li><a href="{% url 'dataset_users_view' %}"><span style="font-size: 20px;font-weight: 800;">Datasæt : Brugere</span></a></li>
 </ul>
 <br>
 <form action="{% url 'logout_admin' %}" method="post">

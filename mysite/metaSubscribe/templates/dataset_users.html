@@ -2,18 +2,19 @@
 
 {% block content %}
 <button onclick="window.location.href='{% url 'admin_page' %}';">Admin Menu</button>
-<h2>Datasæt: Registrerede Brugere</h2>
+<p><span style="font-size: 20px;font-weight: 800;"><strong>Datasæt med registrerede brugere og beskrivelse af brug</strong></span></p>
 
 <ul>
     {% for dataset, users in dataset_user_info.items %}
         <li>
-            {{ dataset.TITEL }}:
-            <!-- Button to trigger copying -->
-            <button onclick="copyToClipboard('{% for user in users %}{{ user.EMAIL }}{% if not forloop.last %}, {% endif %}{% endfor %}')">Kopier Emails</button>
+            <strong>{{ dataset.TITEL }}</strong>:
+            
             <ul>
                 {% for user in users %}
                     <li>{{ user.EMAIL }}</li>
                 {% endfor %}
+                <!-- Button to trigger copying -->
+            <button onclick="copyToClipboard('{% for user in users %}{{ user.EMAIL }}{% if not forloop.last %}, {% endif %}{% endfor %}')">Kopier Emails</button>
             </ul>
         </li>
     {% endfor %}

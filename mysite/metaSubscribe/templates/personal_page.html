@@ -1,25 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h2>Bruger: {{ user.EMAIL }}</h2>
+<h2><strong>Bruger: {{ user.EMAIL }}</strong></h2>
 
 <form method="post" action="{% url 'logout_view' %}">
     {% csrf_token %}
     <button type="submit">Log ud</button>
 </form>
 
-<h3>Registrer brug af Datasæt</h3>
+<h2><strong>Registrer brug af Datasæt</strong></h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Registrer</button>
 </form>
 
-<h3>Registrerede Datasæt</h3>   <!-- for bruger: {{ user.EMAIL }}-->
+<h2><strong>Registrerede Datasæt</strong></h2>   <!-- for bruger: {{ user.EMAIL }}-->
 <ul>
     {% for dataset in user_datasets %}
     <li>
-        {{ dataset.dataset.TITEL }} - {{ dataset.description }}
+        <strong>{{ dataset.dataset.TITEL }}</strong> - {{ dataset.description }}
         <!-- Remove Dataset Form -->
         <form method="post" action="{% url 'personal_page_view' %}" style="display: inline;">
             {% csrf_token %}

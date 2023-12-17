@@ -111,52 +111,39 @@ def personal_page_view(request):
     return render(request, 'personal_page.html', context)
 
 
-
-
-
-
-
 def dataset_users_view(request):
     if not request.session.get('admin_logged_in'):
         return redirect('admin_login')
 
-    # Fetch all datasets that have at least one user associated via UserDataset
-    datasets_with_users = Dataset.objects.filter(userdataset__isnull=False).distinct()
+    # Fetch all datasets that have at least one user associated via UserDataset, sorted alphabetically
+    datasets_with_users = Dataset.objects.filter(userdataset__isnull=False).order_by('TITEL').distinct()
 
     # Create a data structure to hold users per dataset
     dataset_user_info = {}
     for dataset in datasets_with_users:
-        # Get users associated with each dataset
-        users_for_dataset = CustomUser.objects.filter(userdataset__dataset=dataset)
+        # Get users associated with each dataset and sort them alphabetically by email
+        users_for_dataset = CustomUser.objects.filter(userdataset__dataset=dataset).order_by('EMAIL')
         dataset_user_info[dataset] = users_for_dataset
 
     return render(request, 'dataset_users.html', {'dataset_user_info': dataset_user_info})
 
 
-
-def user_datasets_view(request):
-
-    if not request.session.get('admin_logged_in'):
-        return redirect('admin_login')
-    
-    # This query might be inefficient if the number of users is large.
-    # Consider using pagination or filtering.
-    users = CustomUser.objects.all()
-
-    # Prepare a structure to hold datasets with descriptions per user
-    user_dataset_info = {}
-    for user in users:
-        user_datasets = UserDataset.objects.filter(customuser=user).select_related('dataset')
-        user_dataset_info[user] = user_datasets  # This pairs the user with their respective datasets and descriptions
-
-    return render(request, 'user_datasets.html', {'user_dataset_info': user_dataset_info})
-
 def users_view(request):
     if not request.session.get('admin_logged_in'):
         return redirect('admin_login')
     
-    users = CustomUser.objects.all()
-    return render(request, 'users.html', {'users': users})
+    # Fetch all users sorted alphabetically by email
+    users = CustomUser.objects.order_by('EMAIL').all()
+
+    user_dataset_info = {}
+    for user in users:
+        # Fetch datasets for each user and sort them alphabetically by title
+        user_datasets = UserDataset.objects.filter(customuser=user).order_by('dataset__TITEL').select_related('dataset')
+        user_dataset_info[user] = user_datasets
+
+    return render(request, 'users.html', {'user_dataset_info': user_dataset_info})
+
+
 
 
 def datasets_view(request):
