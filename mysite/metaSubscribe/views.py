@@ -3,7 +3,6 @@ from .forms import UserLoginForm, AdminLoginForm
 from django.contrib import messages
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
-# from .forms import AdminLoginForm
 from django.http import HttpResponse
 from .models import Dataset
 from .models import CustomUser, Dataset, UserDataset
@@ -115,17 +114,15 @@ def dataset_users_view(request):
     if not request.session.get('admin_logged_in'):
         return redirect('admin_login')
 
-    # Fetch all datasets that have at least one user associated via UserDataset, sorted alphabetically
     datasets_with_users = Dataset.objects.filter(userdataset__isnull=False).order_by('TITEL').distinct()
 
-    # Create a data structure to hold users per dataset
     dataset_user_info = {}
     for dataset in datasets_with_users:
-        # Get users associated with each dataset and sort them alphabetically by email
-        users_for_dataset = CustomUser.objects.filter(userdataset__dataset=dataset).order_by('EMAIL')
-        dataset_user_info[dataset] = users_for_dataset
+        user_datasets = UserDataset.objects.filter(dataset=dataset).select_related('customuser')
+        dataset_user_info[dataset] = user_datasets
 
     return render(request, 'dataset_users.html', {'dataset_user_info': dataset_user_info})
+
 
 
 def users_view(request):
@@ -142,8 +139,6 @@ def users_view(request):
         user_dataset_info[user] = user_datasets
 
     return render(request, 'users.html', {'user_dataset_info': user_dataset_info})
-
-
 
 
 def datasets_view(request):

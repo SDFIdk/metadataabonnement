@@ -2,11 +2,12 @@
 
 {% block content %}
 <button onclick="window.location.href='{% url 'admin_page' %}';">Admin Menu</button>
-<p><span style="font-size: 20px;font-weight: 800;"><strong>Alle brugere med registrerede datasæt og beskrivelse af brug</strong></span></p>
-<ul>
+<p><span style="font-size: 20px;font-weight: 800;"><strong>Alle brugere med deres registrerede datasæt og beskrivelse af brug</strong></span></p>
+<input style="width: 200px;"  type="text" id="userSearch" onkeyup="filterUsers()" placeholder="Søg efter bruger...">
+<ul id="userList">
     {% for user, user_datasets in user_dataset_info.items %}
         <li>
-            <span style="font-size: 20px;font-weight: 800;"><strong>{{ user.EMAIL }}</strong></span>
+            <span style="font-size: 20px;font-weight: 800;"><strong class="user-email">{{ user.EMAIL }}</strong></span>
             <!-- List of Datasets for each User -->
             {% if user_datasets %}
                 <ul>
@@ -23,4 +24,31 @@
         </li>
     {% endfor %}
 </ul>
+
+<script>
+function filterUsers() {
+    var input, filter, ul, li, i, userEmail, txtValue;
+    input = document.getElementById('userSearch');
+    filter = input.value.toUpperCase();
+    ul = document.getElementById("userList");
+    li = ul.getElementsByTagName('li');
+
+    for (i = 0; i < li.length; i++) {
+        userEmail = li[i].getElementsByClassName("user-email")[0];
+        if (userEmail) {
+            txtValue = userEmail.textContent || userEmail.innerText;
+            if (txtValue.toUpperCase().startsWith(filter)) {
+                li[i].style.display = ""; // Show the entire <li> element
+            } else {
+                li[i].style.display = "none"; // Hide the entire <li> element
+            }
+        }
+    }
+}
+</script>
+
+    
+    
+    
+    
 {% endblock %}

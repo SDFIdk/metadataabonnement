@@ -5,20 +5,20 @@
 <p><span style="font-size: 20px;font-weight: 800;"><strong>Datasæt med registrerede brugere og beskrivelse af brug</strong></span></p>
 
 <ul>
-    {% for dataset, users in dataset_user_info.items %}
+    {% for dataset, user_datasets in dataset_user_info.items %}
         <li>
-            <strong>{{ dataset.TITEL }}</strong>:
-            
+            <span style="font-size: 20px;font-weight: 800;"><strong>{{ dataset.TITEL }}</strong></span>
             <ul>
-                {% for user in users %}
-                    <li>{{ user.EMAIL }}</li>
+                {% for user_dataset in user_datasets %}
+                    <li><strong>{{ user_dataset.customuser.EMAIL }}</strong> - {{ user_dataset.description }}</li>
                 {% endfor %}
                 <!-- Button to trigger copying -->
-            <button onclick="copyToClipboard('{% for user in users %}{{ user.EMAIL }}{% if not forloop.last %}, {% endif %}{% endfor %}')">Kopier Emails</button>
+                <button onclick="copyToClipboard('{% for user_dataset in user_datasets %}{{ user_dataset.customuser.EMAIL }}{% if not forloop.last %}, {% endif %}{% endfor %}')">Kopier Emails</button>
             </ul>
         </li>
     {% endfor %}
 </ul>
+
 
 <script>
 function copyToClipboard(text) {

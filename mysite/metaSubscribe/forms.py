@@ -39,9 +39,10 @@ class RegisterDatasetForm(forms.ModelForm):
         exclude_datasets = kwargs.pop('exclude_datasets', None)
         super(RegisterDatasetForm, self).__init__(*args, **kwargs)
         if exclude_datasets is not None:
-            self.fields['dataset'].queryset = Dataset.objects.exclude(id__in=exclude_datasets)
+            self.fields['dataset'].queryset = Dataset.objects.exclude(id__in=exclude_datasets).order_by('TITEL')
         else:
-            self.fields['dataset'].queryset = Dataset.objects.all()
+            self.fields['dataset'].queryset = Dataset.objects.all().order_by('TITEL')
+
 
 
 
