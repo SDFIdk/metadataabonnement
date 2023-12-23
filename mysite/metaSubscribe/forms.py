@@ -4,7 +4,6 @@ from .models import CustomUser
 from .models import UserDataset
 
 
-
 class UserLoginForm(forms.Form):
     email = forms.EmailField(label="Email")
 
@@ -14,9 +13,11 @@ class UserLoginForm(forms.Form):
             raise forms.ValidationError("Email must end with '@sdfi.dk'")
         return email
     
+
 class AdminLoginForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput)
+
 
 class RegisterDatasetForm(forms.ModelForm):
     description = forms.CharField(
